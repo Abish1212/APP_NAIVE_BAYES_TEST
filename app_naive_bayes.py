@@ -5,13 +5,74 @@ import sys
 import os
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Add current directory to path to ensure imports work
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from Naive_Based_Classifier import naive_bayes_classifier
+# ==========================================
+# Naive Bayes Classifier Function
+# ==========================================
+def naive_bayes_classifier(X, y, test_size=0.2, random_state=42):
+    """
+    Trains a Naive Bayes classifier and returns comprehensive metrics.
+    
+    Parameters:
+    -----------
+    X : array-like
+        Feature matrix (dataset features)
+    y : array-like
+        Target variable (labels)
+    test_size : float
+        Proportion of dataset to include in test split (default: 0.2)
+    random_state : int
+        Random seed for reproducibility (default: 42)
+    
+    Returns:
+    --------
+    dict : Dictionary containing model and performance metrics
+    """
+    
+    # Split the dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+    
+    # Create a Gaussian Naive Bayes classifier
+    model = GaussianNB()
+    
+    # Fit the model to the training data
+    model.fit(X_train, y_train)
+    
+    # Predict labels for training and testing sets
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+    
+    # Calculate training accuracy
+    training_accuracy = accuracy_score(y_train, y_train_pred)
+    
+    # Calculate testing accuracy
+    testing_accuracy = accuracy_score(y_test, y_test_pred)
+    
+    # Calculate confusion matrix for test set
+    conf_matrix = confusion_matrix(y_test, y_test_pred)
+    
+    # Return comprehensive results
+    results = {
+        'model': model,
+        'X_train': X_train,
+        'X_test': X_test,
+        'y_train': y_train,
+        'y_test': y_test,
+        'training_accuracy': training_accuracy,
+        'testing_accuracy': testing_accuracy,
+        'confusion_matrix': conf_matrix,
+        'train_size': len(X_train),
+        'test_size': len(X_test)
+    }
+    
+    return results
 
 st.set_page_config(page_title="Naive Bayes Classifier", layout="wide")
 st.title("🤖 Naive Bayes Classifier")
