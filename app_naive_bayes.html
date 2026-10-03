@@ -345,7 +345,37 @@
     </div>
 
     <script>
-      const sampleCsv = `Feature1,Feature2,Feature3,Target\n1.5,4.2,7.0,Class_A\n2.3,5.1,8.5,Class_B\n3.1,6.3,9.2,Class_A\n4.0,7.4,11.5,Class_B\n5.2,8.1,13.0,Class_A\n6.1,9.2,14.7,Class_B\n7.0,10.5,16.1,Class_A\n8.3,11.8,18.2,Class_B\n9.5,13.0,20.1,Class_A\n10.2,14.1,21.3,Class_B`;
+      const sampleCsv = `Feature1,Feature2,Feature3,Target
+1.5,4.2,7.0,Class_A
+2.3,5.1,8.5,Class_B
+3.1,6.3,9.2,Class_A
+4.0,7.4,11.5,Class_B
+5.2,8.1,13.0,Class_A
+6.1,9.2,14.7,Class_B
+7.0,10.5,16.2,Class_A
+8.3,11.8,17.9,Class_B
+9.1,12.6,19.4,Class_A
+10.2,13.9,21.1,Class_B
+1.8,4.5,7.3,Class_A
+2.6,5.4,8.8,Class_B
+3.4,6.6,9.5,Class_A
+4.3,7.7,11.8,Class_B
+5.5,8.4,13.3,Class_A
+6.4,9.5,15.0,Class_B
+7.3,10.8,16.5,Class_A
+8.6,12.1,18.2,Class_B
+9.4,12.9,19.7,Class_A
+10.5,14.2,21.4,Class_B
+1.2,3.9,6.7,Class_A
+2.0,4.8,8.2,Class_B
+3.8,6.9,9.8,Class_A
+4.6,7.5,12.1,Class_B
+5.8,8.7,13.6,Class_A
+6.7,9.8,15.3,Class_B
+7.6,11.1,16.8,Class_A
+8.9,12.4,18.5,Class_B
+9.7,13.2,20.0,Class_A
+10.8,14.5,21.7,Class_B`;
 
       const state = {
         rows: [],
@@ -562,16 +592,13 @@
         const X = [];
         const y = [];
 
-        const missingMode = 'drop';
         const workingRows = state.rows.map(row => ({ ...row }));
 
-        if (missingMode === 'drop') {
-          for (let i = workingRows.length - 1; i >= 0; i -= 1) {
-            const row = workingRows[i];
-            const rowHasMissingFeature = state.featureColumns.some((col) => row[col] === undefined || row[col] === null || String(row[col]).trim() === '');
-            if (rowHasMissingFeature) {
-              workingRows.splice(i, 1);
-            }
+        for (let i = workingRows.length - 1; i >= 0; i -= 1) {
+          const row = workingRows[i];
+          const rowHasMissingFeature = state.featureColumns.some((col) => row[col] === undefined || row[col] === null || String(row[col]).trim() === '');
+          if (rowHasMissingFeature) {
+            workingRows.splice(i, 1);
           }
         }
 
@@ -614,10 +641,6 @@
 
         processed.forEach(({ featureValues, targetValue }) => {
           const rowValues = featureValueMap.map((meta, idx) => {
-            if (meta.kind === 'numeric') {
-              const value = featureValues[idx];
-              return Number.isNaN(value) ? 0 : Number(value);
-            }
             const value = featureValues[idx];
             return Number.isNaN(value) ? 0 : Number(value);
           });
@@ -683,6 +706,7 @@
 
         classes.forEach((label) => {
           const rows = X.filter((_, idx) => y[idx] === label);
+          if (!rows.length) return;
           const featureCount = rows[0].length;
           const classMean = Array(featureCount).fill(0);
           const classVar = Array(featureCount).fill(0);
@@ -817,6 +841,11 @@
         }
 
         const { trainX, trainY, testX, testY } = trainTestSplit(X, y, testPercent, seed);
+        if (!trainX.length || !testX.length) {
+          setStatus('Need at least one training and one testing example.', 'error');
+          return;
+        }
+
         const model = gaussianNBTrain(trainX, trainY);
         const trainPred = gaussianNBPredict(trainX, model);
         const testPred = gaussianNBPredict(testX, model);
