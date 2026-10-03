@@ -1,354 +1,852 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Untitled</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="CoolUtils HTML exporter" />
-<style type="text/css">
-<!--
-body { color: #000000; background-color: #FFFFFF; }
-.python1-classname { color: #000080; font-weight: bold; }
-.python1-comment { color: #808080; font-style: italic; }
-.python1-commentedcode { color: #C0C0C0; font-style: italic; }
-.python1-documentation { color: #CC00FF; }
-.python1-float { color: #008080; }
-.python1-functionname { color: #008080; font-weight: bold; }
-.python1-hexadecimal { color: #008080; }
-.python1-identifier { color: #000000; }
-.python1-matchingbrace { color: #0000FF; font-weight: bold; }
-.python1-multi-linestring { color: #808000; }
-.python1-nonreservedkeyword { color: #000080; }
-.python1-number { color: #008080; }
-.python1-octal { color: #008080; }
-.python1-reservedword { font-weight: bold; }
-.python1-space { color: #C0C0C0; }
-.python1-string { color: #808000; }
-.python1-symbol { color: #800000; }
-.python1-syntaxerror { color: #FF0000; }
-.python1-systemfunctionsandvariables { font-weight: bold; }
-.python1-unbalancedbrace { color: #FFFF00; }
--->
-</style>
-</head>
-<body>
-<!--StartFragment--><pre><code><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">streamlit</span><span class="python1-space"> </span><span class="python1-reservedword">as</span><span class="python1-space"> </span><span class="python1-identifier">st
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">pandas</span><span class="python1-space"> </span><span class="python1-reservedword">as</span><span class="python1-space"> </span><span class="python1-identifier">pd
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">numpy</span><span class="python1-space"> </span><span class="python1-reservedword">as</span><span class="python1-space"> </span><span class="python1-identifier">np
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">sys
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">os
-</span><span class="python1-reservedword">from</span><span class="python1-space"> </span><span class="python1-identifier">sklearn</span><span class="python1-symbol">.</span><span class="python1-identifier">preprocessing</span><span class="python1-space"> </span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">LabelEncoder
-</span><span class="python1-reservedword">from</span><span class="python1-space"> </span><span class="python1-identifier">sklearn</span><span class="python1-symbol">.</span><span class="python1-identifier">metrics</span><span class="python1-space"> </span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">confusion_matrix
-</span><span class="python1-reservedword">from</span><span class="python1-space"> </span><span class="python1-identifier">sklearn</span><span class="python1-symbol">.</span><span class="python1-identifier">model_selection</span><span class="python1-space"> </span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">train_test_split
-</span><span class="python1-reservedword">from</span><span class="python1-space"> </span><span class="python1-identifier">sklearn</span><span class="python1-symbol">.</span><span class="python1-identifier">naive_bayes</span><span class="python1-space"> </span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">GaussianNB
-</span><span class="python1-reservedword">from</span><span class="python1-space"> </span><span class="python1-identifier">sklearn</span><span class="python1-symbol">.</span><span class="python1-identifier">metrics</span><span class="python1-space"> </span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">accuracy_score
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">matplotlib</span><span class="python1-symbol">.</span><span class="python1-identifier">pyplot</span><span class="python1-space"> </span><span class="python1-reservedword">as</span><span class="python1-space"> </span><span class="python1-identifier">plt
-</span><span class="python1-reservedword">import</span><span class="python1-space"> </span><span class="python1-identifier">seaborn</span><span class="python1-space"> </span><span class="python1-reservedword">as</span><span class="python1-space"> </span><span class="python1-identifier">sns
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naive Bayes Classifier</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --muted: #64748b;
+        --border: #dfe7f5;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #dc2626;
+        --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      }
 
-</span><span class="python1-comment"># ==========================================
-# Naive Bayes Classifier Function
-# ==========================================
-</span><span class="python1-reservedword">def</span><span class="python1-space"> </span><span class="python1-functionname">naive_bayes_classifier</span><span class="python1-symbol">(</span><span class="python1-identifier">X</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">test_size</span><span class="python1-symbol">=</span><span class="python1-float">0.2</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">random_state</span><span class="python1-symbol">=</span><span class="python1-number">42</span><span class="python1-symbol">):
-</span><span class="python1-space">    </span><span class="python1-documentation">&quot;&quot;&quot;
-    Trains a Naive Bayes classifier and returns comprehensive metrics.
-    
-    Parameters:
-    -----------
-    X : array-like
-        Feature matrix (dataset features)
-    y : array-like
-        Target variable (labels)
-    test_size : float
-        Proportion of dataset to include in test split (default: 0.2)
-    random_state : int
-        Random seed for reproducibility (default: 42)
-    
-    Returns:
-    --------
-    dict : Dictionary containing model and performance metrics
-    &quot;&quot;&quot;
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Split the dataset into training and testing sets
-</span><span class="python1-space">    </span><span class="python1-identifier">X_train</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">X_test</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_train</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_test</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">train_test_split</span><span class="python1-symbol">(
-</span><span class="python1-space">        </span><span class="python1-identifier">X</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">test_size</span><span class="python1-symbol">=</span><span class="python1-identifier">test_size</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">random_state</span><span class="python1-symbol">=</span><span class="python1-identifier">random_state
-</span><span class="python1-space">    </span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Create a Gaussian Naive Bayes classifier
-</span><span class="python1-space">    </span><span class="python1-identifier">model</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">GaussianNB</span><span class="python1-symbol">()
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Fit the model to the training data
-</span><span class="python1-space">    </span><span class="python1-identifier">model</span><span class="python1-symbol">.</span><span class="python1-identifier">fit</span><span class="python1-symbol">(</span><span class="python1-identifier">X_train</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_train</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Predict labels for training and testing sets
-</span><span class="python1-space">    </span><span class="python1-identifier">y_train_pred</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">model</span><span class="python1-symbol">.</span><span class="python1-identifier">predict</span><span class="python1-symbol">(</span><span class="python1-identifier">X_train</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-identifier">y_test_pred</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">model</span><span class="python1-symbol">.</span><span class="python1-identifier">predict</span><span class="python1-symbol">(</span><span class="python1-identifier">X_test</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Calculate training accuracy
-</span><span class="python1-space">    </span><span class="python1-identifier">training_accuracy</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">accuracy_score</span><span class="python1-symbol">(</span><span class="python1-identifier">y_train</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_train_pred</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Calculate testing accuracy
-</span><span class="python1-space">    </span><span class="python1-identifier">testing_accuracy</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">accuracy_score</span><span class="python1-symbol">(</span><span class="python1-identifier">y_test</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_test_pred</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Calculate confusion matrix for test set
-</span><span class="python1-space">    </span><span class="python1-identifier">conf_matrix</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">confusion_matrix</span><span class="python1-symbol">(</span><span class="python1-identifier">y_test</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">y_test_pred</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Return comprehensive results
-</span><span class="python1-space">    </span><span class="python1-identifier">results</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-symbol">{
-</span><span class="python1-space">        </span><span class="python1-string">'model'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">model</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'X_train'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">X_train</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'X_test'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">X_test</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'y_train'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">y_train</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'y_test'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">y_test</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'training_accuracy'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">training_accuracy</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'testing_accuracy'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">testing_accuracy</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'confusion_matrix'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-string">'train_size'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">len</span><span class="python1-symbol">(</span><span class="python1-identifier">X_train</span><span class="python1-symbol">),
-</span><span class="python1-space">        </span><span class="python1-string">'test_size'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">len</span><span class="python1-symbol">(</span><span class="python1-identifier">X_test</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-symbol">}
-</span><span class="python1-space">    
-    </span><span class="python1-reservedword">return</span><span class="python1-space"> </span><span class="python1-identifier">results
+      * { box-sizing: border-box; }
 
-st</span><span class="python1-symbol">.</span><span class="python1-identifier">set_page_config</span><span class="python1-symbol">(</span><span class="python1-identifier">page_title</span><span class="python1-symbol">=</span><span class="python1-string">&quot;Naive Bayes Classifier&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">layout</span><span class="python1-symbol">=</span><span class="python1-string">&quot;wide&quot;</span><span class="python1-symbol">)
-</span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">title</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ¤– Naive Bayes Classifier&quot;</span><span class="python1-symbol">)
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: #1f2937;
+      }
 
-</span><span class="python1-comment"># Sidebar for configuration
-</span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">header</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Configuration&quot;</span><span class="python1-symbol">)
+      .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+      }
 
-</span><span class="python1-comment"># ==========================================
-# 1. CSV File Upload
-# ==========================================
-</span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;1. Dataset Input&quot;</span><span class="python1-symbol">)
-</span><span class="python1-identifier">uploaded_file</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">file_uploader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Upload CSV file&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">type</span><span class="python1-symbol">=[</span><span class="python1-string">&quot;csv&quot;</span><span class="python1-symbol">])
+      h1 {
+        margin: 0 0 20px;
+        font-size: 2.1rem;
+      }
 
-</span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">uploaded_file</span><span class="python1-space"> </span><span class="python1-reservedword">is</span><span class="python1-space"> </span><span class="python1-reservedword">not</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">None</span><span class="python1-symbol">:
-</span><span class="python1-space">    </span><span class="python1-comment"># Load dataset
-</span><span class="python1-space">    </span><span class="python1-identifier">df</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">checkbox</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Show dataset preview&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">value</span><span class="python1-symbol">=</span><span class="python1-nonreservedkeyword">True</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-identifier">data</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">pd</span><span class="python1-symbol">.</span><span class="python1-identifier">read_csv</span><span class="python1-symbol">(</span><span class="python1-identifier">uploaded_file</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">df</span><span class="python1-symbol">:
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ“Љ Dataset Preview&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-identifier">f</span><span class="python1-string">&quot;Dataset shape: {data.shape}&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">dataframe</span><span class="python1-symbol">(</span><span class="python1-identifier">data</span><span class="python1-symbol">.</span><span class="python1-identifier">head</span><span class="python1-symbol">(</span><span class="python1-number">10</span><span class="python1-symbol">))
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-comment"># 2. Feature and Target Selection
-</span><span class="python1-space">    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;2. Column Selection&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-identifier">columns</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">data</span><span class="python1-symbol">.</span><span class="python1-identifier">columns</span><span class="python1-symbol">.</span><span class="python1-identifier">tolist</span><span class="python1-symbol">()
-</span><span class="python1-space">    
-    </span><span class="python1-identifier">target_column</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">selectbox</span><span class="python1-symbol">(
-</span><span class="python1-space">        </span><span class="python1-string">&quot;Select target column (y)&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">columns</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-nonreservedkeyword">help</span><span class="python1-symbol">=</span><span class="python1-string">&quot;The column containing labels/target values&quot;
-</span><span class="python1-space">    </span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-identifier">feature_columns</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">multiselect</span><span class="python1-symbol">(
-</span><span class="python1-space">        </span><span class="python1-string">&quot;Select feature columns (X)&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-symbol">[</span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-reservedword">for</span><span class="python1-space"> </span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-reservedword">in</span><span class="python1-space"> </span><span class="python1-identifier">columns</span><span class="python1-space"> </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-symbol">!=</span><span class="python1-space"> </span><span class="python1-identifier">target_column</span><span class="python1-symbol">],
-</span><span class="python1-space">        </span><span class="python1-identifier">default</span><span class="python1-symbol">=[</span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-reservedword">for</span><span class="python1-space"> </span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-reservedword">in</span><span class="python1-space"> </span><span class="python1-identifier">columns</span><span class="python1-space"> </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-symbol">!=</span><span class="python1-space"> </span><span class="python1-identifier">target_column</span><span class="python1-symbol">],
-</span><span class="python1-space">        </span><span class="python1-nonreservedkeyword">help</span><span class="python1-symbol">=</span><span class="python1-string">&quot;The columns containing features/predictors&quot;
-</span><span class="python1-space">    </span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-reservedword">not</span><span class="python1-space"> </span><span class="python1-identifier">feature_columns</span><span class="python1-symbol">:
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">error</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Please select at least one feature column!&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">stop</span><span class="python1-symbol">()
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-comment"># 3. Training/Testing Split
-</span><span class="python1-space">    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;3. Train-Test Split&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-identifier">test_size</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">slider</span><span class="python1-symbol">(
-</span><span class="python1-space">        </span><span class="python1-string">&quot;Test set size (%)&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">min_value</span><span class="python1-symbol">=</span><span class="python1-number">5</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">max_value</span><span class="python1-symbol">=</span><span class="python1-number">50</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">value</span><span class="python1-symbol">=</span><span class="python1-number">20</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">step</span><span class="python1-symbol">=</span><span class="python1-number">1</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-nonreservedkeyword">help</span><span class="python1-symbol">=</span><span class="python1-string">&quot;Percentage of data to use for testing&quot;
-</span><span class="python1-space">    </span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-identifier">test_size</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">test_size</span><span class="python1-space"> </span><span class="python1-symbol">/</span><span class="python1-space"> </span><span class="python1-number">100
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-comment"># 4. Random State
-</span><span class="python1-space">    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-identifier">random_state</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">number_input</span><span class="python1-symbol">(
-</span><span class="python1-space">        </span><span class="python1-string">&quot;Random seed&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-identifier">value</span><span class="python1-symbol">=</span><span class="python1-number">42</span><span class="python1-symbol">,
-</span><span class="python1-space">        </span><span class="python1-nonreservedkeyword">help</span><span class="python1-symbol">=</span><span class="python1-string">&quot;For reproducibility&quot;
-</span><span class="python1-space">    </span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-comment"># Data Preprocessing
-</span><span class="python1-space">    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;4. Data Preprocessing&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Extract features and target
-</span><span class="python1-space">    </span><span class="python1-identifier">X</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">data</span><span class="python1-symbol">[</span><span class="python1-identifier">feature_columns</span><span class="python1-symbol">].</span><span class="python1-identifier">copy</span><span class="python1-symbol">()
-</span><span class="python1-space">    </span><span class="python1-identifier">y</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">data</span><span class="python1-symbol">[</span><span class="python1-identifier">target_column</span><span class="python1-symbol">].</span><span class="python1-identifier">copy</span><span class="python1-symbol">()
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Handle missing values
-</span><span class="python1-space">    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">isnull</span><span class="python1-symbol">().</span><span class="python1-identifier">sum</span><span class="python1-symbol">().</span><span class="python1-identifier">sum</span><span class="python1-symbol">()</span><span class="python1-space"> </span><span class="python1-symbol">&gt;</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-symbol">:
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">warning</span><span class="python1-symbol">(</span><span class="python1-string">&quot;вљ пёЏ Missing values detected in features!&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">handle_missing</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">radio</span><span class="python1-symbol">(
-</span><span class="python1-space">            </span><span class="python1-string">&quot;How to handle missing values?&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">            </span><span class="python1-symbol">[</span><span class="python1-string">&quot;Drop rows&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-string">&quot;Fill with mean&quot;</span><span class="python1-symbol">]
-</span><span class="python1-space">        </span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">handle_missing</span><span class="python1-space"> </span><span class="python1-symbol">==</span><span class="python1-space"> </span><span class="python1-string">&quot;Drop rows&quot;</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">X</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">dropna</span><span class="python1-symbol">()
-</span><span class="python1-space">            </span><span class="python1-identifier">y</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">y</span><span class="python1-symbol">[</span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">index</span><span class="python1-symbol">]
-</span><span class="python1-space">        </span><span class="python1-reservedword">else</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">X</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">fillna</span><span class="python1-symbol">(</span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">mean</span><span class="python1-symbol">())
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Encode categorical features
-</span><span class="python1-space">    </span><span class="python1-identifier">categorical_cols</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">select_dtypes</span><span class="python1-symbol">(</span><span class="python1-identifier">include</span><span class="python1-symbol">=[</span><span class="python1-string">'object'</span><span class="python1-symbol">]).</span><span class="python1-identifier">columns
-</span><span class="python1-space">    </span><span class="python1-identifier">label_encoders</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-symbol">{}
-</span><span class="python1-space">    
-    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">len</span><span class="python1-symbol">(</span><span class="python1-identifier">categorical_cols</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">&gt;</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-symbol">:
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">info</span><span class="python1-symbol">(</span><span class="python1-identifier">f</span><span class="python1-string">&quot;Encoding categorical columns: {', '.join(categorical_cols)}&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-reservedword">for</span><span class="python1-space"> </span><span class="python1-identifier">col</span><span class="python1-space"> </span><span class="python1-reservedword">in</span><span class="python1-space"> </span><span class="python1-identifier">categorical_cols</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">le</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">LabelEncoder</span><span class="python1-symbol">()
-</span><span class="python1-space">            </span><span class="python1-identifier">X</span><span class="python1-symbol">[</span><span class="python1-identifier">col</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">le</span><span class="python1-symbol">.</span><span class="python1-identifier">fit_transform</span><span class="python1-symbol">(</span><span class="python1-identifier">X</span><span class="python1-symbol">[</span><span class="python1-identifier">col</span><span class="python1-symbol">].</span><span class="python1-identifier">astype</span><span class="python1-symbol">(</span><span class="python1-nonreservedkeyword">str</span><span class="python1-symbol">))
-</span><span class="python1-space">            </span><span class="python1-identifier">label_encoders</span><span class="python1-symbol">[</span><span class="python1-identifier">col</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">le
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Encode target if categorical
-</span><span class="python1-space">    </span><span class="python1-identifier">target_encoder</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">None
-</span><span class="python1-space">    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">y</span><span class="python1-symbol">.</span><span class="python1-identifier">dtype</span><span class="python1-space"> </span><span class="python1-symbol">==</span><span class="python1-space"> </span><span class="python1-string">'object'</span><span class="python1-symbol">:
-</span><span class="python1-space">        </span><span class="python1-identifier">target_encoder</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">LabelEncoder</span><span class="python1-symbol">()
-</span><span class="python1-space">        </span><span class="python1-identifier">y</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">target_encoder</span><span class="python1-symbol">.</span><span class="python1-identifier">fit_transform</span><span class="python1-symbol">(</span><span class="python1-identifier">y</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Convert to numpy arrays
-</span><span class="python1-space">    </span><span class="python1-identifier">X</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">X</span><span class="python1-symbol">.</span><span class="python1-identifier">values
-</span><span class="python1-space">    </span><span class="python1-identifier">y</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">np</span><span class="python1-symbol">.</span><span class="python1-identifier">array</span><span class="python1-symbol">(</span><span class="python1-identifier">y</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-comment"># Train Model
-</span><span class="python1-space">    </span><span class="python1-comment"># ==========================================
-</span><span class="python1-space">    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;5. Model Training&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">    </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">sidebar</span><span class="python1-symbol">.</span><span class="python1-identifier">button</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџљЂ Train Model&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">use_container_width</span><span class="python1-symbol">=</span><span class="python1-nonreservedkeyword">True</span><span class="python1-symbol">):
-</span><span class="python1-space">        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">spinner</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Training Naive Bayes classifier...&quot;</span><span class="python1-symbol">):
-</span><span class="python1-space">            </span><span class="python1-comment"># Train the model
-</span><span class="python1-space">            </span><span class="python1-identifier">results</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">naive_bayes_classifier</span><span class="python1-symbol">(
-</span><span class="python1-space">                </span><span class="python1-identifier">X</span><span class="python1-symbol">=</span><span class="python1-identifier">X</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">y</span><span class="python1-symbol">=</span><span class="python1-identifier">y</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">test_size</span><span class="python1-symbol">=</span><span class="python1-identifier">test_size</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">random_state</span><span class="python1-symbol">=</span><span class="python1-nonreservedkeyword">int</span><span class="python1-symbol">(</span><span class="python1-identifier">random_state</span><span class="python1-symbol">)
-</span><span class="python1-space">            </span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">success</span><span class="python1-symbol">(</span><span class="python1-string">&quot;вњ… Model training completed!&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-comment"># Display Results
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ“€ Model Results&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-comment"># Create columns for metrics
-</span><span class="python1-space">        </span><span class="python1-identifier">col1</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">col2</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">col3</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">columns</span><span class="python1-symbol">(</span><span class="python1-number">3</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">col1</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(
-</span><span class="python1-space">                </span><span class="python1-string">&quot;Training Accuracy&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{results['training_accuracy']:.4f}&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{results['training_accuracy']*100:.2f}%&quot;
-</span><span class="python1-space">            </span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">col2</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(
-</span><span class="python1-space">                </span><span class="python1-string">&quot;Testing Accuracy&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{results['testing_accuracy']:.4f}&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{results['testing_accuracy']*100:.2f}%&quot;
-</span><span class="python1-space">            </span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">col3</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(
-</span><span class="python1-space">                </span><span class="python1-string">&quot;Train-Test Samples&quot;</span><span class="python1-symbol">,
-</span><span class="python1-space">                </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{results['train_size']}/{results['test_size']}&quot;
-</span><span class="python1-space">            </span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-comment"># Display Confusion Matrix
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ”Ќ Confusion Matrix&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-identifier">conf_matrix</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">results</span><span class="python1-symbol">[</span><span class="python1-string">'confusion_matrix'</span><span class="python1-symbol">]
-</span><span class="python1-space">        
-        </span><span class="python1-comment"># Validate confusion matrix
-</span><span class="python1-space">        </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-space"> </span><span class="python1-reservedword">is</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">None</span><span class="python1-space"> </span><span class="python1-reservedword">or</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">len</span><span class="python1-symbol">(</span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">==</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">error</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Confusion matrix is empty!&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-reservedword">else</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-comment"># Create a more detailed view
-</span><span class="python1-space">            </span><span class="python1-identifier">col1</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">col2</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">columns</span><span class="python1-symbol">(</span><span class="python1-number">2</span><span class="python1-symbol">)
-</span><span class="python1-space">            
-            </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">col1</span><span class="python1-symbol">:
-</span><span class="python1-space">                </span><span class="python1-comment"># Heatmap
-</span><span class="python1-space">                </span><span class="python1-identifier">fig</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">ax</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">plt</span><span class="python1-symbol">.</span><span class="python1-identifier">subplots</span><span class="python1-symbol">(</span><span class="python1-identifier">figsize</span><span class="python1-symbol">=(</span><span class="python1-number">8</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-number">6</span><span class="python1-symbol">))
-</span><span class="python1-space">                
-                </span><span class="python1-comment"># Prepare labels based on matrix shape
-</span><span class="python1-space">                </span><span class="python1-identifier">heatmap_kwargs</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-symbol">{
-</span><span class="python1-space">                    </span><span class="python1-string">'data'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">,
-</span><span class="python1-space">                    </span><span class="python1-string">'annot'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">True</span><span class="python1-symbol">,
-</span><span class="python1-space">                    </span><span class="python1-string">'fmt'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-string">'d'</span><span class="python1-symbol">,
-</span><span class="python1-space">                    </span><span class="python1-string">'cmap'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-string">'Blues'</span><span class="python1-symbol">,
-</span><span class="python1-space">                    </span><span class="python1-string">'cbar'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-nonreservedkeyword">True</span><span class="python1-symbol">,
-</span><span class="python1-space">                    </span><span class="python1-string">'ax'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-identifier">ax
-</span><span class="python1-space">                </span><span class="python1-symbol">}
-</span><span class="python1-space">                
-                </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">.</span><span class="python1-identifier">shape</span><span class="python1-symbol">[</span><span class="python1-number">0</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">==</span><span class="python1-space"> </span><span class="python1-number">2</span><span class="python1-symbol">:
-</span><span class="python1-space">                    </span><span class="python1-identifier">heatmap_kwargs</span><span class="python1-symbol">[</span><span class="python1-string">'xticklabels'</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-string">'Negative'</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-string">'Positive'</span><span class="python1-symbol">]
-</span><span class="python1-space">                    </span><span class="python1-identifier">heatmap_kwargs</span><span class="python1-symbol">[</span><span class="python1-string">'yticklabels'</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-string">'Negative'</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-string">'Positive'</span><span class="python1-symbol">]
-</span><span class="python1-space">                
-                </span><span class="python1-identifier">sns</span><span class="python1-symbol">.</span><span class="python1-identifier">heatmap</span><span class="python1-symbol">(**</span><span class="python1-identifier">heatmap_kwargs</span><span class="python1-symbol">)
-</span><span class="python1-space">                </span><span class="python1-identifier">ax</span><span class="python1-symbol">.</span><span class="python1-identifier">set_xlabel</span><span class="python1-symbol">(</span><span class="python1-string">'Predicted Label'</span><span class="python1-symbol">)
-</span><span class="python1-space">                </span><span class="python1-identifier">ax</span><span class="python1-symbol">.</span><span class="python1-identifier">set_ylabel</span><span class="python1-symbol">(</span><span class="python1-string">'True Label'</span><span class="python1-symbol">)
-</span><span class="python1-space">                </span><span class="python1-identifier">ax</span><span class="python1-symbol">.</span><span class="python1-identifier">set_title</span><span class="python1-symbol">(</span><span class="python1-string">'Confusion Matrix Heatmap'</span><span class="python1-symbol">)
-</span><span class="python1-space">                </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">pyplot</span><span class="python1-symbol">(</span><span class="python1-identifier">fig</span><span class="python1-symbol">)
-</span><span class="python1-space">            
-            </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">col2</span><span class="python1-symbol">:
-</span><span class="python1-space">                </span><span class="python1-comment"># Text representation
-</span><span class="python1-space">                </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">text</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Confusion Matrix:&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">                </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">code</span><span class="python1-symbol">(</span><span class="python1-nonreservedkeyword">str</span><span class="python1-symbol">(</span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">))
-</span><span class="python1-space">                
-                </span><span class="python1-comment"># Calculate additional metrics
-</span><span class="python1-space">                </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">.</span><span class="python1-identifier">shape</span><span class="python1-symbol">[</span><span class="python1-number">0</span><span class="python1-symbol">]</span><span class="python1-space"> </span><span class="python1-symbol">==</span><span class="python1-space"> </span><span class="python1-number">2</span><span class="python1-symbol">:</span><span class="python1-space">  </span><span class="python1-comment"># Binary classification
-</span><span class="python1-space">                    </span><span class="python1-identifier">tn</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">fp</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">fn</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">conf_matrix</span><span class="python1-symbol">.</span><span class="python1-identifier">ravel</span><span class="python1-symbol">()
-</span><span class="python1-space">                    </span><span class="python1-identifier">precision</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">/</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">fp</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">fp</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">&gt;</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-space"> </span><span class="python1-reservedword">else</span><span class="python1-space"> </span><span class="python1-number">0
-</span><span class="python1-space">                    </span><span class="python1-identifier">recall</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">/</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">fn</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">tp</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">fn</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">&gt;</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-space"> </span><span class="python1-reservedword">else</span><span class="python1-space"> </span><span class="python1-number">0
-</span><span class="python1-space">                    </span><span class="python1-identifier">f1</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-number">2</span><span class="python1-space"> </span><span class="python1-symbol">*</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">precision</span><span class="python1-space"> </span><span class="python1-symbol">*</span><span class="python1-space"> </span><span class="python1-identifier">recall</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">/</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">precision</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">recall</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-reservedword">if</span><span class="python1-space"> </span><span class="python1-symbol">(</span><span class="python1-identifier">precision</span><span class="python1-space"> </span><span class="python1-symbol">+</span><span class="python1-space"> </span><span class="python1-identifier">recall</span><span class="python1-symbol">)</span><span class="python1-space"> </span><span class="python1-symbol">&gt;</span><span class="python1-space"> </span><span class="python1-number">0</span><span class="python1-space"> </span><span class="python1-reservedword">else</span><span class="python1-space"> </span><span class="python1-number">0
-</span><span class="python1-space">                    
-                    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ“Љ Additional Metrics (Binary Classification)&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">                    </span><span class="python1-identifier">metric_col1</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">metric_col2</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">metric_col3</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">columns</span><span class="python1-symbol">(</span><span class="python1-number">3</span><span class="python1-symbol">)
-</span><span class="python1-space">                    
-                    </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">metric_col1</span><span class="python1-symbol">:
-</span><span class="python1-space">                        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Precision&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{precision:.4f}&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">                    </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">metric_col2</span><span class="python1-symbol">:
-</span><span class="python1-space">                        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Recall&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{recall:.4f}&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">                    </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">metric_col3</span><span class="python1-symbol">:
-</span><span class="python1-space">                        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">metric</span><span class="python1-symbol">(</span><span class="python1-string">&quot;F1-Score&quot;</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">f</span><span class="python1-string">&quot;{f1:.4f}&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-comment"># Display configuration used
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">subheader</span><span class="python1-symbol">(</span><span class="python1-string">&quot;вљ™пёЏ Configuration Used&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">config_col1</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">config_col2</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-identifier">config_col3</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">columns</span><span class="python1-symbol">(</span><span class="python1-number">3</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">config_col1</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-string">&quot;**Features Used:**&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-identifier">feature_columns</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">config_col2</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-string">&quot;**Target Column:**&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-identifier">target_column</span><span class="python1-symbol">)
-</span><span class="python1-space">        
-        </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">config_col3</span><span class="python1-symbol">:
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-string">&quot;**Split Configuration:**&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-identifier">f</span><span class="python1-string">&quot;Train: {int((1-test_size)*100)}%&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">            </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-identifier">f</span><span class="python1-string">&quot;Test: {int(test_size*100)}%&quot;</span><span class="python1-symbol">)
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+        margin-bottom: 22px;
+      }
 
-</span><span class="python1-reservedword">else</span><span class="python1-symbol">:
-</span><span class="python1-space">    </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">info</span><span class="python1-symbol">(</span><span class="python1-string">&quot;рџ‘€ Upload a CSV file from the sidebar to get started!&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">    
-    </span><span class="python1-comment"># Show example of expected CSV format
-</span><span class="python1-space">    </span><span class="python1-reservedword">with</span><span class="python1-space"> </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">expander</span><span class="python1-symbol">(</span><span class="python1-string">&quot;в„№пёЏ Expected CSV Format&quot;</span><span class="python1-symbol">):
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">write</span><span class="python1-symbol">(</span><span class="python1-string">&quot;Your CSV file should have columns for features and a target column.&quot;</span><span class="python1-symbol">)
-</span><span class="python1-space">        </span><span class="python1-identifier">example_data</span><span class="python1-space"> </span><span class="python1-symbol">=</span><span class="python1-space"> </span><span class="python1-identifier">pd</span><span class="python1-symbol">.</span><span class="python1-identifier">DataFrame</span><span class="python1-symbol">({
-</span><span class="python1-space">            </span><span class="python1-string">'Feature1'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-float">1.5</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">2.3</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">3.1</span><span class="python1-symbol">],
-</span><span class="python1-space">            </span><span class="python1-string">'Feature2'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-float">4.2</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">5.1</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">6.3</span><span class="python1-symbol">],
-</span><span class="python1-space">            </span><span class="python1-string">'Feature3'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-float">7.0</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">8.5</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-float">9.2</span><span class="python1-symbol">],
-</span><span class="python1-space">            </span><span class="python1-string">'Target'</span><span class="python1-symbol">:</span><span class="python1-space"> </span><span class="python1-symbol">[</span><span class="python1-string">'Class_A'</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-string">'Class_B'</span><span class="python1-symbol">,</span><span class="python1-space"> </span><span class="python1-string">'Class_A'</span><span class="python1-symbol">]
-</span><span class="python1-space">        </span><span class="python1-symbol">})
-</span><span class="python1-space">        </span><span class="python1-identifier">st</span><span class="python1-symbol">.</span><span class="python1-identifier">dataframe</span><span class="python1-symbol">(</span><span class="python1-identifier">example_data</span><span class="python1-symbol">)
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+      }
 
-</span></code></pre><!--EndFragment--></body>
+      .section-title {
+        font-size: 1.2rem;
+        margin: 0 0 10px;
+      }
+
+      .file-input {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #f8fafc;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      button:hover { background: var(--primary-dark); }
+
+      button.secondary {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      button.secondary:hover { background: #cbd5e1; }
+
+      .status {
+        margin-top: 14px;
+        color: var(--muted);
+        min-height: 22px;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      select, input[type="number"], input[type="range"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: white;
+      }
+
+      .features-box {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: #fafcff;
+        min-height: 120px;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .feature-item input { margin: 0; }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: white;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 480px;
+      }
+
+      th, td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+      }
+
+      th {
+        background: #f8fafc;
+        position: sticky;
+        top: 0;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .metric-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 16px;
+      }
+
+      .metric-card .label {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+
+      .metric-card .value {
+        font-size: 1.7rem;
+        font-weight: 700;
+      }
+
+      .metric-card .delta {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .matrix {
+        margin-top: 18px;
+      }
+
+      .matrix table {
+        max-width: 420px;
+      }
+
+      .hidden { display: none !important; }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #075985;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 860px) {
+        .row, .controls, .metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🤖 Naive Bayes Classifier</h1>
+
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h2 class="section-title">1. Dataset Input</h2>
+            <input id="csvFile" class="file-input" type="file" accept=".csv" />
+            <div class="button-row">
+              <button id="loadSampleBtn" class="secondary" type="button">Load Sample Data</button>
+            </div>
+            <div id="status" class="status">Waiting for a CSV file or sample dataset.</div>
+          </div>
+
+          <div>
+            <h2 class="section-title">CSV Format</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Feature1</th>
+                    <th>Feature2</th>
+                    <th>Feature3</th>
+                    <th>Target</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1.5</td><td>4.2</td><td>7.0</td><td>Class_A</td></tr>
+                  <tr><td>2.3</td><td>5.1</td><td>8.5</td><td>Class_B</td></tr>
+                  <tr><td>3.1</td><td>6.3</td><td>9.2</td><td>Class_A</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="app" class="hidden">
+        <div class="panel">
+          <h2 class="section-title">2. Dataset Preview</h2>
+          <p id="datasetMeta" style="margin: 0 0 14px; color: var(--muted);"></p>
+          <div class="table-wrap" id="previewTable"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="section-title">3. Configuration</h2>
+          <div class="controls">
+            <div>
+              <label for="targetColumn">Target column (y)</label>
+              <select id="targetColumn"></select>
+            </div>
+
+            <div>
+              <label for="randomSeed">Random seed</label>
+              <input id="randomSeed" type="number" value="42" />
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label>Feature columns (X)</label>
+              <div id="featureList" class="features-box"></div>
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label for="testSize">Test set size (%)</label>
+              <input id="testSize" type="range" min="5" max="50" value="20" />
+              <div style="margin-top: 8px; color: var(--muted);">
+                Selected: <span id="testSizeLabel">20%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button id="trainBtn" type="button">🚀 Train Model</button>
+          </div>
+        </div>
+
+        <div id="results" class="panel hidden">
+          <h2 class="section-title">4. Model Results</h2>
+          <div class="metrics">
+            <div class="metric-card">
+              <div class="label">Training Accuracy</div>
+              <div id="trainAcc" class="value">0.0000</div>
+              <div id="trainAccPct" class="delta">0.00%</div>
+            </div>
+            <div class="metric-card">
+              <div class="label">Testing Accuracy</div>
+              <div id="testAcc" class="value">0.0000</div>
+              <div id="testAccPct" class="delta">0.00%</div>
+            </div>
+            <div class="metric-card">
+              <div class="label">Train/Test Samples</div>
+              <div id="sampleSplit" class="value">0/0</div>
+              <div class="delta"><span class="badge">Model ready</span></div>
+            </div>
+          </div>
+
+          <div class="matrix">
+            <h3>Confusion Matrix</h3>
+            <div id="confusionMatrix"></div>
+          </div>
+
+          <div id="extraMetrics" class="matrix hidden">
+            <h3>Additional Metrics</h3>
+            <div class="metrics">
+              <div class="metric-card">
+                <div class="label">Precision</div>
+                <div id="precisionValue" class="value">0.0000</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">Recall</div>
+                <div id="recallValue" class="value">0.0000</div>
+              </div>
+              <div class="metric-card">
+                <div class="label">F1-Score</div>
+                <div id="f1Value" class="value">0.0000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const sampleCsv = `Feature1,Feature2,Feature3,Target\n1.5,4.2,7.0,Class_A\n2.3,5.1,8.5,Class_B\n3.1,6.3,9.2,Class_A\n4.0,7.4,11.5,Class_B\n5.2,8.1,13.0,Class_A\n6.1,9.2,14.7,Class_B\n7.0,10.5,16.1,Class_A\n8.3,11.8,18.2,Class_B\n9.5,13.0,20.1,Class_A\n10.2,14.1,21.3,Class_B`;
+
+      const state = {
+        rows: [],
+        columns: [],
+        targetColumn: '',
+        featureColumns: []
+      };
+
+      const fileInput = document.getElementById('csvFile');
+      const statusEl = document.getElementById('status');
+      const appEl = document.getElementById('app');
+      const previewTable = document.getElementById('previewTable');
+      const datasetMeta = document.getElementById('datasetMeta');
+      const targetColumnSelect = document.getElementById('targetColumn');
+      const featureListEl = document.getElementById('featureList');
+      const testSizeInput = document.getElementById('testSize');
+      const testSizeLabel = document.getElementById('testSizeLabel');
+      const trainBtn = document.getElementById('trainBtn');
+      const resultsEl = document.getElementById('results');
+
+      function setStatus(message, type = 'info') {
+        statusEl.textContent = message;
+        statusEl.style.color = type === 'error' ? '#dc2626' : type === 'success' ? '#16a34a' : '#64748b';
+      }
+
+      function parseCSV(text) {
+        const rows = [];
+        let current = '';
+        let row = [];
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i += 1) {
+          const char = text[i];
+          const next = text[i + 1];
+
+          if (char === '"') {
+            if (inQuotes && next === '"') {
+              current += '"';
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === ',' && !inQuotes) {
+            row.push(current);
+            current = '';
+          } else if ((char === '\n' || char === '\r') && !inQuotes) {
+            if (char === '\r' && next === '\n') {
+              i += 1;
+            }
+            row.push(current);
+            if (row.some(cell => cell !== '')) {
+              rows.push(row);
+            }
+            row = [];
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+
+        if (current.length > 0 || row.length > 0) {
+          row.push(current);
+          if (row.some(cell => cell !== '')) {
+            rows.push(row);
+          }
+        }
+
+        return rows.filter((r) => r.length > 0 && r.some((cell) => cell.trim() !== ''));
+      }
+
+      function normalizeRows(csvRows) {
+        if (!csvRows.length) return [];
+
+        const headers = csvRows[0].map((h) => String(h).trim());
+        const data = [];
+
+        for (let r = 1; r < csvRows.length; r += 1) {
+          const values = csvRows[r];
+          if (values.length < headers.length) {
+            while (values.length < headers.length) values.push('');
+          }
+          const obj = {};
+          headers.forEach((header, idx) => {
+            obj[header] = values[idx] !== undefined ? values[idx].trim() : '';
+          });
+          data.push(obj);
+        }
+
+        return { headers, data };
+      }
+
+      function buildPreviewTable(rows) {
+        if (!rows.length) {
+          previewTable.innerHTML = '<p>No data available.</p>';
+          return;
+        }
+
+        const columns = Object.keys(rows[0]);
+        const sampleRows = rows.slice(0, 10);
+        let html = '<table><thead><tr>';
+        columns.forEach((c) => html += `<th>${escapeHtml(c)}</th>`);
+        html += '</tr></thead><tbody>';
+
+        sampleRows.forEach((row) => {
+          html += '<tr>';
+          columns.forEach((c) => html += `<td>${escapeHtml(String(row[c] ?? ''))}</td>`);
+          html += '</tr>';
+        });
+        html += '</tbody></table>';
+        previewTable.innerHTML = html;
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function renderColumnSelectors() {
+        const columns = state.columns;
+        targetColumnSelect.innerHTML = '';
+
+        columns.forEach((column) => {
+          const option = document.createElement('option');
+          option.value = column;
+          option.textContent = column;
+          if (column === state.targetColumn) option.selected = true;
+          targetColumnSelect.appendChild(option);
+        });
+
+        featureListEl.innerHTML = '';
+        state.featureColumns = state.featureColumns.length ? state.featureColumns : columns.filter((c) => c !== state.targetColumn);
+
+        columns.forEach((column) => {
+          if (column === state.targetColumn) return;
+          const item = document.createElement('label');
+          item.className = 'feature-item';
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.value = column;
+          input.checked = state.featureColumns.includes(column);
+          input.addEventListener('change', () => {
+            const selected = [...featureListEl.querySelectorAll('input:checked')].map((el) => el.value);
+            state.featureColumns = selected;
+          });
+          item.appendChild(input);
+          item.appendChild(document.createTextNode(column));
+          featureListEl.appendChild(item);
+        });
+
+        if (!state.featureColumns.length && columns.length > 1) {
+          state.featureColumns = columns.filter((c) => c !== state.targetColumn);
+          featureListEl.querySelectorAll('input').forEach((input) => {
+            input.checked = true;
+          });
+        }
+      }
+
+      function setDataset(rows) {
+        state.rows = rows;
+        state.columns = Object.keys(rows[0] || {});
+        state.targetColumn = state.columns[0] === 'Target' ? 'Target' : state.columns[state.columns.length - 1];
+        state.featureColumns = state.columns.filter((col) => col !== state.targetColumn);
+        datasetMeta.textContent = `Rows: ${rows.length} | Columns: ${state.columns.length}`;
+        buildPreviewTable(rows);
+        renderColumnSelectors();
+        appEl.classList.remove('hidden');
+        resultsEl.classList.add('hidden');
+      }
+
+      function loadCsvText(text) {
+        const parsed = parseCSV(text);
+        if (!parsed.length) {
+          setStatus('The CSV file is empty or invalid.', 'error');
+          return;
+        }
+
+        const normalized = normalizeRows(parsed);
+        if (!normalized.headers.length || !normalized.data.length) {
+          setStatus('Unable to read CSV headers and rows.', 'error');
+          return;
+        }
+
+        setStatus('CSV loaded successfully.', 'success');
+        setDataset(normalized.data);
+      }
+
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => loadCsvText(String(reader.result));
+        reader.onerror = () => setStatus('There was a problem reading the selected file.', 'error');
+        reader.readAsText(file);
+      });
+
+      document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        loadCsvText(sampleCsv);
+      });
+
+      targetColumnSelect.addEventListener('change', (event) => {
+        state.targetColumn = event.target.value;
+        renderColumnSelectors();
+      });
+
+      testSizeInput.addEventListener('input', () => {
+        testSizeLabel.textContent = `${testSizeInput.value}%`;
+      });
+
+      function prepareData() {
+        const X = [];
+        const y = [];
+
+        const missingMode = 'drop';
+        const workingRows = state.rows.map(row => ({ ...row }));
+
+        if (missingMode === 'drop') {
+          for (let i = workingRows.length - 1; i >= 0; i -= 1) {
+            const row = workingRows[i];
+            const rowHasMissingFeature = state.featureColumns.some((col) => row[col] === undefined || row[col] === null || String(row[col]).trim() === '');
+            if (rowHasMissingFeature) {
+              workingRows.splice(i, 1);
+            }
+          }
+        }
+
+        const processed = workingRows.map((row) => {
+          const featureValues = state.featureColumns.map((col) => {
+            const value = row[col];
+            if (value === undefined || value === null || String(value).trim() === '') {
+              return NaN;
+            }
+            const numeric = Number(value);
+            if (!Number.isNaN(numeric)) return numeric;
+            return String(value).trim();
+          });
+
+          const targetValue = row[state.targetColumn];
+          return { featureValues, targetValue };
+        });
+
+        const featureValueMap = state.featureColumns.map((_, featureIndex) => {
+          const values = processed.map((item) => item.featureValues[featureIndex]);
+          const numericValues = values.filter((v) => typeof v === 'number' && !Number.isNaN(v));
+          if (numericValues.length === values.length) {
+            return { kind: 'numeric', values };
+          }
+          const mapping = {};
+          let nextIndex = 0;
+          values.forEach((value) => {
+            if (value === undefined || value === null || Number.isNaN(value)) {
+              return;
+            }
+            const key = String(value);
+            if (!(key in mapping)) mapping[key] = nextIndex++;
+          });
+          const mapped = values.map((value) => {
+            if (value === undefined || value === null || Number.isNaN(value)) return NaN;
+            return mapping[String(value)];
+          });
+          return { kind: 'categorical', mapping, values: mapped };
+        });
+
+        processed.forEach(({ featureValues, targetValue }) => {
+          const rowValues = featureValueMap.map((meta, idx) => {
+            if (meta.kind === 'numeric') {
+              const value = featureValues[idx];
+              return Number.isNaN(value) ? 0 : Number(value);
+            }
+            const value = featureValues[idx];
+            return Number.isNaN(value) ? 0 : Number(value);
+          });
+          X.push(rowValues);
+          y.push(String(targetValue).trim());
+        });
+
+        const targetMap = {};
+        const labels = [];
+        y.forEach((label) => {
+          if (!(label in targetMap)) {
+            targetMap[label] = labels.length;
+            labels.push(label);
+          }
+        });
+
+        const numericY = y.map((label) => targetMap[label]);
+        return { X, y: numericY, labels };
+      }
+
+      function shuffleIndices(length, seed) {
+        const values = Array.from({ length }, (_, i) => i);
+        let current = seed;
+        const random = () => {
+          current = (current * 1664525 + 1013904223) % 4294967296;
+          return current / 4294967296;
+        };
+
+        for (let i = values.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(random() * (i + 1));
+          [values[i], values[j]] = [values[j], values[i]];
+        }
+        return values;
+      }
+
+      function trainTestSplit(X, y, testPercent, seed) {
+        const indices = shuffleIndices(X.length, Number(seed) || 42);
+        const splitIndex = Math.max(1, Math.floor((testPercent / 100) * X.length));
+        const testIndices = new Set(indices.slice(0, splitIndex));
+        const trainX = [];
+        const trainY = [];
+        const testX = [];
+        const testY = [];
+
+        X.forEach((row, idx) => {
+          if (testIndices.has(idx)) {
+            testX.push(row);
+            testY.push(y[idx]);
+          } else {
+            trainX.push(row);
+            trainY.push(y[idx]);
+          }
+        });
+
+        return { trainX, trainY, testX, testY };
+      }
+
+      function gaussianNBTrain(X, y) {
+        const classes = [...new Set(y)];
+        const means = {};
+        const variances = {};
+        const priors = {};
+
+        classes.forEach((label) => {
+          const rows = X.filter((_, idx) => y[idx] === label);
+          const featureCount = rows[0].length;
+          const classMean = Array(featureCount).fill(0);
+          const classVar = Array(featureCount).fill(0);
+
+          rows.forEach((row) => {
+            row.forEach((value, idx) => {
+              classMean[idx] += value;
+            });
+          });
+
+          classMean.forEach((sum, idx) => {
+            classMean[idx] = sum / rows.length;
+          });
+
+          rows.forEach((row) => {
+            row.forEach((value, idx) => {
+              const diff = value - classMean[idx];
+              classVar[idx] += diff * diff;
+            });
+          });
+
+          classVar.forEach((sum, idx) => {
+            classVar[idx] = Math.max((sum / Math.max(1, rows.length - 1)) || 1e-9, 1e-9);
+          });
+
+          means[label] = classMean;
+          variances[label] = classVar;
+          priors[label] = rows.length / X.length;
+        });
+
+        return { classes, means, variances, priors };
+      }
+
+      function gaussianNBPredict(X, model) {
+        return X.map((row) => {
+          let bestLabel = null;
+          let bestScore = -Infinity;
+
+          model.classes.forEach((label) => {
+            let score = Math.log(Math.max(model.priors[label], 1e-9));
+            const mean = model.means[label];
+            const variance = model.variances[label];
+
+            row.forEach((value, idx) => {
+              const diff = value - mean[idx];
+              const sigma2 = Math.max(variance[idx], 1e-9);
+              score += -0.5 * (Math.log(2 * Math.PI * sigma2) + (diff * diff) / sigma2);
+            });
+
+            if (score > bestScore) {
+              bestScore = score;
+              bestLabel = label;
+            }
+          });
+
+          return bestLabel;
+        });
+      }
+
+      function confusionMatrix(actual, predicted, labels) {
+        const matrix = Array.from({ length: labels.length }, () => Array(labels.length).fill(0));
+
+        actual.forEach((value, idx) => {
+          const actualIndex = labels.indexOf(String(value));
+          const predictedIndex = labels.indexOf(String(predicted[idx]));
+          if (actualIndex >= 0 && predictedIndex >= 0) {
+            matrix[actualIndex][predictedIndex] += 1;
+          }
+        });
+
+        return matrix;
+      }
+
+      function computeAccuracy(actual, predicted) {
+        const total = actual.length || 0;
+        if (!total) return 0;
+        let correct = 0;
+        actual.forEach((value, idx) => {
+          if (value === predicted[idx]) correct += 1;
+        });
+        return correct / total;
+      }
+
+      function formatMetric(value) {
+        return Number.isFinite(value) ? value.toFixed(4) : '0.0000';
+      }
+
+      function buildConfusionMatrixHtml(matrix, labels) {
+        const header = `<thead><tr><th></th>${labels.map((label) => `<th>${escapeHtml(label)}</th>`).join('')}</tr></thead>`;
+        const rows = matrix.map((row, rowIndex) => `<tr><th>${escapeHtml(labels[rowIndex])}</th>${row.map((value) => `<td>${value}</td>`).join('')}</tr>`).join('');
+        return `<div class="table-wrap"><table>${header}<tbody>${rows}</tbody></table></div>`;
+      }
+
+      function showBinaryMetrics(matrix) {
+        const extraMetrics = document.getElementById('extraMetrics');
+        extraMetrics.classList.remove('hidden');
+
+        const tp = matrix[1]?.[1] ?? 0;
+        const fp = matrix[0]?.[1] ?? 0;
+        const fn = matrix[1]?.[0] ?? 0;
+        const precision = (tp + fp) > 0 ? tp / (tp + fp) : 0;
+        const recall = (tp + fn) > 0 ? tp / (tp + fn) : 0;
+        const f1 = (precision + recall) > 0 ? (2 * precision * recall) / (precision + recall) : 0;
+
+        document.getElementById('precisionValue').textContent = formatMetric(precision);
+        document.getElementById('recallValue').textContent = formatMetric(recall);
+        document.getElementById('f1Value').textContent = formatMetric(f1);
+      }
+
+      function hideBinaryMetrics() {
+        document.getElementById('extraMetrics').classList.add('hidden');
+      }
+
+      trainBtn.addEventListener('click', () => {
+        if (!state.rows.length) {
+          setStatus('Please load a CSV dataset before training the model.', 'error');
+          return;
+        }
+
+        if (!state.featureColumns.length) {
+          setStatus('Please select at least one feature column.', 'error');
+          return;
+        }
+
+        const testPercent = Number(testSizeInput.value) || 20;
+        const seed = Number(document.getElementById('randomSeed').value) || 42;
+        const { X, y, labels } = prepareData();
+
+        if (!X.length) {
+          setStatus('No valid rows remain after preprocessing.', 'error');
+          return;
+        }
+
+        const { trainX, trainY, testX, testY } = trainTestSplit(X, y, testPercent, seed);
+        const model = gaussianNBTrain(trainX, trainY);
+        const trainPred = gaussianNBPredict(trainX, model);
+        const testPred = gaussianNBPredict(testX, model);
+
+        const trainAcc = computeAccuracy(trainY, trainPred);
+        const testAcc = computeAccuracy(testY, testPred);
+
+        document.getElementById('trainAcc').textContent = formatMetric(trainAcc);
+        document.getElementById('testAcc').textContent = formatMetric(testAcc);
+        document.getElementById('trainAccPct').textContent = `${(trainAcc * 100).toFixed(2)}%`;
+        document.getElementById('testAccPct').textContent = `${(testAcc * 100).toFixed(2)}%`;
+        document.getElementById('sampleSplit').textContent = `${trainX.length}/${testX.length}`;
+
+        const matrix = confusionMatrix(testY, testPred, labels);
+        document.getElementById('confusionMatrix').innerHTML = buildConfusionMatrixHtml(matrix, labels);
+
+        if (labels.length === 2) {
+          showBinaryMetrics(matrix);
+        } else {
+          hideBinaryMetrics();
+        }
+
+        resultsEl.classList.remove('hidden');
+        setStatus('Model training completed successfully.', 'success');
+      });
+
+      window.addEventListener('DOMContentLoaded', () => {
+        testSizeLabel.textContent = `${testSizeInput.value}%`;
+        loadCsvText(sampleCsv);
+      });
+    </script>
+  </body>
 </html>
